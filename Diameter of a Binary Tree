@@ -1,0 +1,38 @@
+The diameter of a tree (sometimes called the width) is the number of nodes on the longest path between two end nodes. The diagram below shows two trees each with diameter nine, the leaves that form the ends of the longest path are shaded (note that there is more than one path in each tree of length nine, but no path longer than nine nodes). 
+
+class TreeNode:
+    def __init__(self, value):
+        self.value = value
+        self.children = []
+
+def tree_diameter(root):
+    if not root:
+        return 0, 0  # (height, diameter)
+
+    heights = []
+    diameters = []
+
+    for child in root.children:
+        height, diameter = tree_diameter(child)
+        heights.append(height)
+        diameters.append(diameter)
+
+    if not heights:
+        return 1, 0  # Leaf node
+
+    max_heights = sorted(heights, reverse=True)[:2]
+
+    height = 1 + max_heights[0]
+    diameter = max(max(heights) + max_heights[1], max(diameters))
+
+    return height, diameter
+
+# Example usage:
+# Create a tree
+root = TreeNode(1)
+root.children = [TreeNode(2), TreeNode(3)]
+root.children[0].children = [TreeNode(4), TreeNode(5)]
+root.children[1].children = [TreeNode(6)]
+
+diameter = tree_diameter(root)
+print("Diameter of the tree:", diameter[1])
